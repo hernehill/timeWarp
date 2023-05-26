@@ -112,3 +112,13 @@ def get_inputs(node):
         results += get_inputs(connection)
 
     return list(set(inputs + results))
+
+
+def get_warp_nodes():
+    """ Get all warp nodes in scene.
+
+    Returns:
+        list of warp nodes
+    """
+
+    return maya.cmds.ls(type="WarpStatus")
