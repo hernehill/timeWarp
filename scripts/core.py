@@ -148,3 +148,23 @@ def get_warped_nodes(warp):
                 warped.append(node)
 
     return warped
+
+
+def select_warped_nodes(warp):
+    """ Select warped nodes.
+
+    Args:
+        warp (str): Maya warp node.
+
+    Returns:
+        None
+    """
+
+    warped_nodes = get_warped_nodes(warp)
+
+    if warped_nodes:
+        maya.cmds.select(warped_nodes, replace=True)
+    else:
+        maya.cmds.select(clear=True)
+
+
