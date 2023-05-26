@@ -186,3 +186,19 @@ def get_warp_curve(warp):
     return warp_curve
 
 
+def select_warp_curve(warp):
+    """ Select warped curve node.
+
+    Args:
+        warp (str): Maya warp node.
+
+    Returns:
+        None
+    """
+
+    warp_curve = get_warp_curve(warp)
+
+    if warp_curve:
+        maya.cmds.select(warp_curve, replace=True)
+    else:
+        maya.cmds.select(clear=True)
