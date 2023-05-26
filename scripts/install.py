@@ -1,10 +1,13 @@
 """Install setup for timeWarp"""
 
+# Python
 import os
 import glob
 import shutil
 
+# Maya
 import maya.mel
+import maya.cmds
 
 
 MOD_INPUT_TEXT = "+ timeWarp 1.0 ABAB/timeWarp\n"\
@@ -22,8 +25,9 @@ def install(module_path):
     Returns:
         None
     """
-    build_mod_file(module_path or get_module_path())
-    transfer_scripts(get_script_path())
+    build_mod_file(module_path, get_script_path())
+    plugin_path = transfer_scripts(get_script_path())
+    load_plugin(plugin_path)
 
 
 def get_script_path():
@@ -65,13 +69,14 @@ def build_mod_file(module_path, scripts_path):
         scripts_path (str): Scripts path location.
 
     Returns:
-        None
+        if successful return str of path to mod file.
     """
 
     mod_text = MOD_INPUT_TEXT.replace("ABAB", scripts_path)
 
     # Check if "maya/modules" folder already exists
     module_file_path = os.path.join(module_path, TIMEWARP_MOD)
+    os.environ['MAYA_PLUG_IN_PATH'] += ":{}".format(module_file_path)
     if not os.path.isdir(module_path):
         try:
             os.mkdir(module_path)
@@ -90,7 +95,7 @@ def build_mod_file(module_path, scripts_path):
     with open(module_file_path, "w") as fileInstance:
         fileInstance.write(mod_text)
 
-    return True
+    return module_file_path
 
 
 def transfer_scripts(scripts_path):
@@ -100,7 +105,7 @@ def transfer_scripts(scripts_path):
         scripts_path (str): Path to scripts location.
 
     Returns:
-        Bool if transfer was successful.
+        String of plugin path.
     """
 
     destination_path = os.path.join(scripts_path, 'timeWarp')
@@ -110,7 +115,7 @@ def transfer_scripts(scripts_path):
             shutil.rmtree(destination_path)
         # Make sure we can delete the file else we need to fail out.
         except:
-            return False
+            return
 
     # Make path to copy files to.
     os.mkdir(destination_path)
@@ -119,7 +124,27 @@ def transfer_scripts(scripts_path):
 
     copy_files(source, destination_path)
 
-    return True
+    plugin_path = os.path.join(source, 'plug-ins')
+
+    return plugin_path
+
+
+def load_plugin(plugin_path):
+    """ Load plugin file.
+
+    Args:
+        plugin_path (str): Path to file directory.
+
+    Returns:
+        None
+    """
+    os.environ['MAYA_MODULE_PATH'] += ":{}".format(plugin_path)
+    os.environ['MAYA_PLUG_IN_PATH'] += ":{}".format(plugin_path)
+
+    plugin_py_path = os.path.join(plugin_path, 'WarpStatus.py')
+
+    maya.cmds.loadPlugin(plugin_py_path, quiet=True)
+    maya.cmds.pluginInfo(plugin_py_path, edit=True, autoload=True)
 
 
 def copy_files(source_folder, destination_folder):
