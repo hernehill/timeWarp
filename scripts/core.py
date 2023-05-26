@@ -168,3 +168,21 @@ def select_warped_nodes(warp):
         maya.cmds.select(clear=True)
 
 
+def get_warp_curve(warp):
+    """ Get curve of warp.
+
+    Args:
+        warp (str): Maya warp node.
+
+    Returns:
+        str of warp curve name.
+    """
+
+    # We need to get the input of warpInput and get that nodes parent.
+    warp_curve = maya.cmds.listConnections(maya.cmds.listConnections("{}.wi" .format(warp),
+                                                                     source=True, destination=False),
+                                           source=True, destination=False)
+
+    return warp_curve
+
+
