@@ -1,7 +1,9 @@
-""" Selected node time wrapper"""
+""" Time Warp Core """
 
+# Python
 import re
 
+# Maya
 import maya.cmds
 
 
