@@ -122,3 +122,29 @@ def get_warp_nodes():
     """
 
     return maya.cmds.ls(type="WarpStatus")
+
+
+def get_warped_nodes(warp):
+    """Get all warped nodes for warp
+
+    Args:
+        warp (str): Maya warp node.
+
+    Returns:
+        list of nodes effected by warp.
+    """
+
+    warped = list
+
+    curves = maya.cmds.listConnections(warp, source=False, destination=True, skipConversionNodes=True)
+
+    if not curves:
+        return warped
+
+    for curve in curves:
+        nodes = maya.cmds.listConnections(curve, source=False, destination=True, skipConversionNodes=True)
+        for node in nodes:
+            if node not in warped:
+                warped.append(node)
+
+    return warped
