@@ -1,2 +1,2 @@
-+ timeWarp 1.0 XXXXXX
++ timeWarp 1.0 path to timeWarp
 scripts: ./scripts
