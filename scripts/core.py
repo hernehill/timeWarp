@@ -83,6 +83,35 @@ def apply_warp(warp_node):
     return True
 
 
+def remove_warp(warp_node):
+    """ Remove Warp to selected nodes.
+
+    Args:
+        warp_node (str): Name of warp node to remove the on the selected objects
+
+    Returns:
+        Bool If removed
+    """
+
+    selection = maya.cmds.ls(selection=True, dag=True, long=True)
+
+    if not selection:
+        return False
+
+    input_nodes = []
+
+    for node in selection:
+        input_nodes = list(set(input_nodes + get_inputs(node)))
+
+    for connection in input_nodes:
+        node_type = maya.cmds.nodeType(connection)
+
+        if node_type in ["animCurveTU", "animCurveTA", "animCurveTL"]:
+            maya.cmds.disconnectAttr("{}.output".format(warp_node), '{}.input'.format(connection))
+
+    return True
+
+
 def get_inputs(node):
     """ Get input nodes of selected node.
 
