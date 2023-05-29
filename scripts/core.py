@@ -112,6 +112,19 @@ def remove_warp(warp_node):
     return True
 
 
+def delete_warp(warp_node):
+    """
+
+    Args:
+        warp_node (str): Name of warp node to delete
+
+    Returns:
+        None
+    """
+
+    maya.cmds.delete(warp_node)
+
+
 def get_inputs(node):
     """ Get input nodes of selected node.
 
