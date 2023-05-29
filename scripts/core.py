@@ -244,3 +244,25 @@ def select_warp_curve(warp):
         maya.cmds.select(warp_curve, replace=True)
     else:
         maya.cmds.select(clear=True)
+
+
+def bake_warp(warp, steps=1):
+    """ Bake out warp and delete.
+
+    Args:
+        warp (str): Maya warp node.
+        steps (int | 1): How often to bake.
+
+    Returns:
+        None
+    """
+
+    warped_nodes = get_warped_nodes(warp)
+
+    frame_start = maya.cmds.playbackOptions(query=True, minTime=True, animationStartTime=False)
+    frame_end = maya.cmds.playbackOptions(query=True, maxTime=True, animationEndTime=False)
+
+    maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
+                          simulation=True, preserveOutsideKeys=True)
+
+    delete_warp(warp)
