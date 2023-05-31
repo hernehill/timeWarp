@@ -296,8 +296,8 @@ def is_warp_active(warp):
     return maya.cmds.getAttr('{}.warpActive' .format(warp))
 
 
-def set_warp_active(warp, status):
-    """ Check if the warp is active
+def set_warp_status(warp, status):
+    """ set warp status.
 
     Args:
         warp (str): Maya warp node.
