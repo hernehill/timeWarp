@@ -31,13 +31,29 @@ class TimeWarp(QtWidgets.QDialog):
         self.create_warp_btn.clicked.connect(self.create_warp)
         main_layout.addWidget(self.create_warp_btn)
 
+        select_layout = QtWidgets.QHBoxLayout()
+        main_layout.addLayout(select_layout)
+
         self.warp_select = QtWidgets.QComboBox()
         self.warp_select.currentTextChanged.connect(self.on_select_change)
-        main_layout.addWidget(self.create_warp_btn)
+        select_layout.addWidget(self.create_warp_btn)
 
         self.active = QtWidgets.QCheckBox("Warp Active")
         self.active.toggled.connect(self.set_active_status)
-        main_layout.addWidget(self.active)
+        select_layout.addWidget(self.active)
+
+        self.add_btn = QtWidgets.QPushButton("Add To Warp")
+        self.add_btn.clicked.connect(self.on_add)
+        main_layout.addWidget(self.add_btn)
+
+        self.select_btn = QtWidgets.QPushButton("Select Warp")
+        self.select_btn.clicked.connect(lambda: core.select_warp_curve(self.warp_select.currentText()))
+        main_layout.addWidget(self.select_btn)
+
+        self.remove_btn = QtWidgets.QPushButton("Remove From Warp")
+        self.remove_btn.clicked.connect(self.on_remove)
+        main_layout.addWidget(self.remove_btn)
+
 
         # add scene data to widgets.
         self.add_scene_data()
@@ -106,6 +122,31 @@ class TimeWarp(QtWidgets.QDialog):
         status = core.is_warp_active(current_warp)
         self.active.setChecked(status)
 
+    def on_add(self):
+        """ On adding objects to warp check for selection.
+
+        Returns:
+            None
+        """
+
+        status = core.apply_warp(self.warp_select.currentText())
+
+        if not status:
+            QtWidgets.QMessageBox.warning(self, 'Time Warp',
+                                          'No objects selected to apply to warp.')
+
+    def on_remove(self):
+        """ On remove from warp check for selection.
+
+        Returns:
+            None
+        """
+
+        status = core.apply_warp(self.warp_select.currentText())
+
+        if not status:
+            QtWidgets.QMessageBox.warning(self, 'Time Warp',
+                                          'No objects selected to remove from warp.')
 
 def launch():
     """ Launch UI """
