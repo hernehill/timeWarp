@@ -283,6 +283,19 @@ def bake_warp(warp, steps=1):
     delete_warp(warp)
 
 
+def is_warp_active(warp):
+    """ Check if the warp is active
+
+    Args:
+        warp (str): Maya warp node.
+
+    Returns:
+        Bool if active
+    """
+
+    return maya.cmds.getAttr('{}.warpActive' .format(warp))
+
+
 class ProgressBarContextManager:
     """Context manager to make using the main progress bar easy."""
     def __init__(self, total_steps, title='Time Warp', message='Processing Time Warp...'):
