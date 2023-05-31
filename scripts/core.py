@@ -296,6 +296,21 @@ def is_warp_active(warp):
     return maya.cmds.getAttr('{}.warpActive' .format(warp))
 
 
+def set_warp_active(warp, status):
+    """ Check if the warp is active
+
+    Args:
+        warp (str): Maya warp node.
+        status (bool): If warp should be active.
+
+    Returns:
+        None
+    """
+
+    maya.cmds.setAttr('{}.warpActive' .format(warp), status)
+
+
+
 class ProgressBarContextManager:
     """Context manager to make using the main progress bar easy."""
     def __init__(self, total_steps, title='Time Warp', message='Processing Time Warp...'):
