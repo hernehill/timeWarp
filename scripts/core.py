@@ -1,10 +1,15 @@
 """ Time Warp Core """
 
 # Python
+import contextlib
 import re
 
 # Maya
 import maya.cmds
+import maya.mel
+
+# Maya's main progress bar
+MAIN_PROGRESS_BAR = maya.mel.eval('$tmp = $gMainProgressBar')
 
 
 def create_warp(warp_name=None, anti_warp=False):
@@ -71,14 +76,19 @@ def apply_warp(warp_node):
 
     input_nodes = []
 
-    for node in selection:
-        input_nodes = list(set(input_nodes + get_inputs(node)))
+    with ProgressBarContextManager(len(selection), message="Getting Input Nodes.") as progress_bar:
+        for node in selection:
+            input_nodes = list(set(input_nodes + get_inputs(node)))
+            progress_bar.update_progress()
 
-    for connection in input_nodes:
-        node_type = maya.cmds.nodeType(connection)
+    with ProgressBarContextManager(len(input_nodes), message="Adding Input Nodes.") as progress_bar:
+        for connection in input_nodes:
+            node_type = maya.cmds.nodeType(connection)
 
-        if node_type in ["animCurveTU", "animCurveTA", "animCurveTL"]:
-            maya.cmds.connectAttr("{}.output".format(warp_node), '{}.input'.format(connection), force=True)
+            if node_type in ["animCurveTU", "animCurveTA", "animCurveTL"]:
+                maya.cmds.connectAttr("{}.output".format(warp_node), '{}.input'.format(connection), force=True)
+
+            progress_bar.update_progress()
 
     return True
 
@@ -100,14 +110,19 @@ def remove_warp(warp_node):
 
     input_nodes = []
 
-    for node in selection:
-        input_nodes = list(set(input_nodes + get_inputs(node)))
+    with ProgressBarContextManager(len(selection), message="Getting Input Nodes.") as progress_bar:
+        for node in selection:
+            input_nodes = list(set(input_nodes + get_inputs(node)))
+            progress_bar.update_progress()
 
-    for connection in input_nodes:
-        node_type = maya.cmds.nodeType(connection)
+    with ProgressBarContextManager(len(input_nodes), message="Removing Input Nodes.") as progress_bar:
+        for connection in input_nodes:
+            node_type = maya.cmds.nodeType(connection)
 
-        if node_type in ["animCurveTU", "animCurveTA", "animCurveTL"]:
-            maya.cmds.disconnectAttr("{}.output".format(warp_node), '{}.input'.format(connection))
+            if node_type in ["animCurveTU", "animCurveTA", "animCurveTL"]:
+                maya.cmds.disconnectAttr("{}.output".format(warp_node), '{}.input'.format(connection))
+
+            progress_bar.update_progress()
 
     return True
 
@@ -266,3 +281,48 @@ def bake_warp(warp, steps=1):
                           simulation=True, preserveOutsideKeys=True)
 
     delete_warp(warp)
+
+
+class ProgressBarContextManager:
+    """Context manager to make using the main progress bar easy."""
+    def __init__(self, total_steps, title='Time Warp', message='Processing Time Warp...'):
+        """ Create context manager
+
+        Args:
+            total_steps (int): Number of steps in process.
+            title (str | Time Warp): Name of progress in progress bar.
+            message (str | Progress Time Warp...): Name of message of progress.
+        """
+        self.total_steps = total_steps
+        self.title = title
+        self.message = message
+
+    def __enter__(self):
+        """ ContextManager Enter.
+
+        Returns:
+            self
+        """
+        maya.cmds.progressBar(MAIN_PROGRESS_BAR,
+                              edit=True,
+                              beginProgress=True,
+                              isInterruptable=True,
+                              status='"Example Calculation ...',
+                              maxValue=self.total_steps)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """ On exit of contextManger.
+
+        Returns:
+            None
+        """
+        maya.cmds.progressBar(MAIN_PROGRESS_BAR, edit=True, endProgress=True)
+
+    def update_progress(self):
+        """ Update progress by 1.
+
+        Returns:
+            None
+        """
+        maya.cmds.progressBar(MAIN_PROGRESS_BAR, edit=True, step=1, status=self.message)
