@@ -1,4 +1,4 @@
-""" Build UI Template"""
+""" Time Warp Widget"""
 
 # Python
 import os
