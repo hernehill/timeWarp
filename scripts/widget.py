@@ -41,7 +41,7 @@ class TimeWarp(QtWidgets.QDialog):
             QtCore.QUrl("http://www.adambakerart.com")))
         self.help_menu.addAction(help_action)
 
-        version = QtWidgets.QAction("Version 1.0", self)
+        version = QtWidgets.QAction("Version: 1.0", self)
         version.setEnabled(False)
         self.help_menu.addAction(version)
 
