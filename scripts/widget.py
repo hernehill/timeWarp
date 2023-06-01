@@ -13,7 +13,7 @@ _WIDGET = None
 
 
 class TimeWarp(QtWidgets.QDialog):
-    """ Template Widget """
+    """ Time Warp Widget"""
 
     def __init__(self):
         super(TimeWarp, self).__init__()
