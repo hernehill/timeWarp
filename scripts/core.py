@@ -81,6 +81,9 @@ def apply_warp(warp_node):
             input_nodes = list(set(input_nodes + get_inputs(node)))
             progress_bar.update_progress()
 
+    if not input_nodes:
+        return False
+
     with ProgressBarContextManager(len(input_nodes), message="Adding Input Nodes.") as progress_bar:
         for connection in input_nodes:
             node_type = maya.cmds.nodeType(connection)
@@ -115,13 +118,18 @@ def remove_warp(warp_node):
             input_nodes = list(set(input_nodes + get_inputs(node)))
             progress_bar.update_progress()
 
+    if not input_nodes:
+        return False
+
     with ProgressBarContextManager(len(input_nodes), message="Removing Input Nodes.") as progress_bar:
         for connection in input_nodes:
             node_type = maya.cmds.nodeType(connection)
 
             if node_type in ["animCurveTU", "animCurveTA", "animCurveTL"]:
-                maya.cmds.disconnectAttr("{}.output".format(warp_node), '{}.input'.format(connection))
-
+                try:
+                    maya.cmds.disconnectAttr("{}.output".format(warp_node), '{}.input'.format(connection))
+                except RuntimeError:
+                    continue
             progress_bar.update_progress()
 
     return True
@@ -308,7 +316,6 @@ def set_warp_status(warp, status):
     """
 
     maya.cmds.setAttr('{}.warpActive' .format(warp), status)
-
 
 
 class ProgressBarContextManager:
