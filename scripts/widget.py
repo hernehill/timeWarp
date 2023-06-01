@@ -36,7 +36,7 @@ class TimeWarp(QtWidgets.QDialog):
 
         self.warp_select = QtWidgets.QComboBox()
         self.warp_select.currentTextChanged.connect(self.on_select_change)
-        select_layout.addWidget(self.create_warp_btn)
+        select_layout.addWidget(self.warp_select)
 
         self.active = QtWidgets.QCheckBox("Warp Active")
         self.active.toggled.connect(self.set_active_status)
@@ -54,6 +54,13 @@ class TimeWarp(QtWidgets.QDialog):
         self.remove_btn.clicked.connect(self.on_remove)
         main_layout.addWidget(self.remove_btn)
 
+        self.delete_btn = QtWidgets.QPushButton("Delete Warp")
+        self.delete_btn.clicked.connect(self.on_delete)
+        main_layout.addWidget(self.delete_btn)
+
+        self.bake_btn = QtWidgets.QPushButton("Bake Out Warp")
+        self.bake_btn.clicked.connect(self.on_bake)
+        main_layout.addWidget(self.bake_btn)
 
         # add scene data to widgets.
         self.add_scene_data()
@@ -147,6 +154,33 @@ class TimeWarp(QtWidgets.QDialog):
         if not status:
             QtWidgets.QMessageBox.warning(self, 'Time Warp',
                                           'No objects selected to remove from warp.')
+
+    def on_delete(self):
+        """ Action on delete of warp we need to fix the widget.
+
+        Returns:
+            None
+        """
+
+        current_warp = self.warp_select.currentText()
+
+        core.delete_warp(current_warp)
+
+        self.warp_select.removeItem(self.warp_select.findText(current_warp))
+
+    def on_bake(self):
+        """ Action on bake of warp we need to fix the widget.
+
+        Returns:
+            None
+        """
+
+        current_warp = self.warp_select.currentText()
+
+        core.bake_warp(current_warp)
+
+        self.warp_select.removeItem(self.warp_select.findText(current_warp))
+
 
 def launch():
     """ Launch UI """
