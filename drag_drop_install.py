@@ -1,6 +1,7 @@
 """ Drag and drop install information."""
 # Python
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtGui
+import os
 import sys
 from shiboken2 import wrapInstance
 # Set for Python 3
@@ -14,6 +15,8 @@ import maya.OpenMayaUI as omui
 # Custom
 from scripts import install
 
+ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
+
 
 class WarpInstall(QtWidgets.QDialog):
     def __init__(self, parent=None):
@@ -21,10 +24,26 @@ class WarpInstall(QtWidgets.QDialog):
 
         self.parent = parent
 
-        self.setWindowTitle("timeWarp Install")
+        self.setWindowTitle("Time Warp Install")
+        self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
         self.setMinimumWidth(600)
 
         main_layout = QtWidgets.QVBoxLayout(self)
+        script_layout = QtWidgets.QHBoxLayout(self)
+        main_layout.addLayout(script_layout)
+
+        self.scripts_label = QtWidgets.QLabel("Scripts Path")
+        script_layout.addWidget(self.scripts_label, 6)
+
+        script_path = install.get_script_path()
+        self.script_path = QtWidgets.QLineEdit(script_path)
+        script_layout.addWidget(self.script_path, 30)
+
+        self.script_browse = QtWidgets.QPushButton(parent=self, text="...")
+        self.script_browse.setMinimumWidth(30)
+        self.script_browse.pressed.connect(self.browse_script_path)
+        script_layout.addWidget(self.script_browse, 1)
+
         module_layout = QtWidgets.QHBoxLayout(self)
         main_layout.addLayout(module_layout)
         
@@ -40,7 +59,8 @@ class WarpInstall(QtWidgets.QDialog):
         self.module_browse.pressed.connect(self.browse_modules_path)
         module_layout.addWidget(self.module_browse, 1)
 
-        self.install_button = QtWidgets.QPushButton(parent=self, text="Install timeWarp")
+        self.install_button = QtWidgets.QPushButton(parent=self, text="Install Time Warp")
+        self.install_button.setStyleSheet("background-color : #16A085")
         self.install_button.clicked.connect(lambda: install.install(self.module_path.text()))
         main_layout.addWidget(self.install_button)
 
@@ -52,11 +72,25 @@ class WarpInstall(QtWidgets.QDialog):
         """
         directory = QtWidgets.QFileDialog.getExistingDirectory(self,
                                                                "Set Modules Directory",
-                                                               self.modulePathTxt.text())
+                                                               self.module_path.text())
         self.sender().setDown(False)  # unstuck the button
         if not directory:
             return
-        self.modulePathTxt.setText(directory)
+        self.module_path.setText(directory)
+
+    def browse_script_path(self):
+        """ Open browser to set new script paths.
+
+        Returns:
+            None
+        """
+        directory = QtWidgets.QFileDialog.getExistingDirectory(self,
+                                                               "Set Scripts Directory",
+                                                               self.script_path.text())
+        self.sender().setDown(False)  # unstuck the button
+        if not directory:
+            return
+        self.script_path.setText(directory)
 
     def closeEvent(self, event):
         """ Close event.

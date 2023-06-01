@@ -16,17 +16,18 @@ MOD_INPUT_TEXT = "+ timeWarp 1.0 ABAB/timeWarp\n"\
 TIMEWARP_MOD = "timeWarp.mod"
 
 
-def install(module_path):
+def install(module_path, script_path):
     """ Install files based on location set in GUI
 
     Args:
         module_path (str): Path to where modules should be saved.
+        script_path (str): Path to where scripts should be saved.
 
     Returns:
         None
     """
-    build_mod_file(module_path, get_script_path())
-    plugin_path = transfer_scripts(get_script_path())
+    build_mod_file(module_path, script_path)
+    plugin_path = transfer_scripts(script_path)
     load_plugin(plugin_path)
 
 
