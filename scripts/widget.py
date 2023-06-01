@@ -20,21 +20,30 @@ class TimeWarp(QtWidgets.QDialog):
 
         # Build UI
         self.setWindowTitle('Time Warp')
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
 
-        self.setGeometry(300, 300, 500, 600)
+        self.setGeometry(300, 300, 300, 350)
+        self.setMinimumSize(400, 350)
 
         main_layout = QtWidgets.QVBoxLayout(self)
+        main_layout.setAlignment(QtCore.Qt.AlignTop)
         self.setLayout(main_layout)
-
-        self.create_warp_btn = QtWidgets.QPushButton("Create Warp Node")
-        self.create_warp_btn.clicked.connect(self.create_warp)
-        main_layout.addWidget(self.create_warp_btn)
 
         select_layout = QtWidgets.QHBoxLayout()
         main_layout.addLayout(select_layout)
 
+        self.create_warp_btn = QtWidgets.QPushButton("Create")
+        self.create_warp_btn.setFixedWidth(70)
+        self.create_warp_btn.setFixedHeight(30)
+        self.create_warp_btn.setStyleSheet("background-color : #16A085")
+        self.create_warp_btn.clicked.connect(self.create_warp)
+        select_layout.addWidget(self.create_warp_btn)
+
         self.warp_select = QtWidgets.QComboBox()
+        self.warp_select.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        self.warp_select.setFixedHeight(30)
+        self.warp_select.setMinimumWidth(170)
         self.warp_select.currentTextChanged.connect(self.on_select_change)
         select_layout.addWidget(self.warp_select)
 
@@ -42,25 +51,35 @@ class TimeWarp(QtWidgets.QDialog):
         self.active.toggled.connect(self.set_active_status)
         select_layout.addWidget(self.active)
 
+        self.select_warp_btn = QtWidgets.QPushButton("Select Warp")
+        self.select_warp_btn.setFixedHeight(45)
+        self.select_warp_btn.clicked.connect(lambda: core.select_warp_curve(self.warp_select.currentText()))
+        main_layout.addWidget(self.select_btn)
+
+        self.select_warped_btn = QtWidgets.QPushButton("Select Warped")
+        self.select_warped_btn.setFixedHeight(45)
+        self.select_warped_btn.clicked.connect(lambda: core.select_warped_nodes(self.warp_select.currentText()))
+        main_layout.addWidget(self.select_warped_btn)
+
         self.add_btn = QtWidgets.QPushButton("Add To Warp")
+        self.add_btn.setFixedHeight(45)
         self.add_btn.clicked.connect(self.on_add)
         main_layout.addWidget(self.add_btn)
 
-        self.select_btn = QtWidgets.QPushButton("Select Warp")
-        self.select_btn.clicked.connect(lambda: core.select_warp_curve(self.warp_select.currentText()))
-        main_layout.addWidget(self.select_btn)
-
         self.remove_btn = QtWidgets.QPushButton("Remove From Warp")
+        self.remove_btn.setFixedHeight(45)
         self.remove_btn.clicked.connect(self.on_remove)
         main_layout.addWidget(self.remove_btn)
 
-        self.delete_btn = QtWidgets.QPushButton("Delete Warp")
-        self.delete_btn.clicked.connect(self.on_delete)
-        main_layout.addWidget(self.delete_btn)
-
         self.bake_btn = QtWidgets.QPushButton("Bake Out Warp")
+        self.bake_btn.setFixedHeight(45)
         self.bake_btn.clicked.connect(self.on_bake)
         main_layout.addWidget(self.bake_btn)
+
+        self.delete_btn = QtWidgets.QPushButton("Delete Warp")
+        self.delete_btn.setStyleSheet("background-color : #E74C3C")
+        self.delete_btn.clicked.connect(self.on_delete)
+        main_layout.addWidget(self.delete_btn)
 
         # add scene data to widgets.
         self.add_scene_data()

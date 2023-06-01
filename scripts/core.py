@@ -56,7 +56,7 @@ def create_warp(warp_name=None, anti_warp=False):
     # Connect real time to the alternate condition
     maya.cmds.connectAttr("time1.outTime", status_node + ".timeInput", force=True)
 
-    return warp_node
+    return status_node
 
 
 def apply_warp(warp_node):
