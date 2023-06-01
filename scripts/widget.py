@@ -30,6 +30,15 @@ class TimeWarp(QtWidgets.QDialog):
         main_layout.setAlignment(QtCore.Qt.AlignTop)
         self.setLayout(main_layout)
 
+        self.menu_bar = QtWidgets.QMenuBar()
+        self.help_menu = self.menu_bar.addMenu("Help")
+        main_layout.setMenuBar(self.menu_bar)
+
+        help_action = QtWidgets.QAction("Help Doc", self)
+        help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
+            QtCore.QUrl("http://www.adambakerart.com")))
+        self.help_menu.addAction(help_action)
+
         select_layout = QtWidgets.QHBoxLayout()
         main_layout.addLayout(select_layout)
 
