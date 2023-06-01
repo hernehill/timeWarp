@@ -64,41 +64,62 @@ class TimeWarp(QtWidgets.QDialog):
         select_layout.addWidget(self.warp_select)
 
         self.active = QtWidgets.QCheckBox("Warp Active")
+        self.active.setEnabled(False)
         self.active.toggled.connect(self.set_active_status)
         select_layout.addWidget(self.active)
 
         self.select_warp_btn = QtWidgets.QPushButton("Select Warp")
+        self.select_warp_btn.setEnabled(False)
         self.select_warp_btn.setFixedHeight(45)
         self.select_warp_btn.clicked.connect(lambda: core.select_warp_curve(self.warp_select.currentText()))
         main_layout.addWidget(self.select_warp_btn)
 
         self.select_warped_btn = QtWidgets.QPushButton("Select Warped")
+        self.select_warped_btn.setEnabled(False)
         self.select_warped_btn.setFixedHeight(45)
         self.select_warped_btn.clicked.connect(lambda: core.select_warped_nodes(self.warp_select.currentText()))
         main_layout.addWidget(self.select_warped_btn)
 
         self.add_btn = QtWidgets.QPushButton("Add To Warp")
+        self.add_btn.setEnabled(False)
         self.add_btn.setFixedHeight(45)
         self.add_btn.clicked.connect(self.on_add)
         main_layout.addWidget(self.add_btn)
 
         self.remove_btn = QtWidgets.QPushButton("Remove From Warp")
+        self.remove_btn.setEnabled(False)
         self.remove_btn.setFixedHeight(45)
         self.remove_btn.clicked.connect(self.on_remove)
         main_layout.addWidget(self.remove_btn)
 
         self.bake_btn = QtWidgets.QPushButton("Bake Out Warp")
+        self.bake_btn.setEnabled(False)
         self.bake_btn.setFixedHeight(45)
         self.bake_btn.clicked.connect(self.on_bake)
         main_layout.addWidget(self.bake_btn)
 
         self.delete_btn = QtWidgets.QPushButton("Delete Warp")
+        self.delete_btn.setEnabled(False)
         self.delete_btn.setStyleSheet("background-color : #E74C3C")
         self.delete_btn.clicked.connect(self.on_delete)
         main_layout.addWidget(self.delete_btn)
 
         # add scene data to widgets.
         self.add_scene_data()
+
+    def toggle_buttons(self):
+        """ Toggle enable of buttons.
+
+        Returns:
+            None
+        """
+        self.active.setEnabled(not self.active.isEnabled())
+        self.select_warp_btn.setEnabled(not self.select_warp_btn.isEnabled())
+        self.select_warped_btn.setEnabled(not self.select_warped_btn.isEnabled())
+        self.add_btn.setEnabled(not self.add_btn.isEnabled())
+        self.remove_btn.setEnabled(not self.remove_btn.isEnabled())
+        self.bake_btn.setEnabled(not self.bake_btn.isEnabled())
+        self.delete_btn.setEnabled(not self.delete_btn.isEnabled())
 
     def add_scene_data(self):
         """ Run this after building of GUI to set the widget based on scene.
@@ -119,6 +140,7 @@ class TimeWarp(QtWidgets.QDialog):
         if current_warp:
             status = core.is_warp_active(current_warp)
             self.active.setChecked(status)
+            self.toggle_buttons()
 
         self.warp_select.blockSignals(False)
         self.active.blockSignals(False)
@@ -135,6 +157,11 @@ class TimeWarp(QtWidgets.QDialog):
 
         if warp_name and create:
             name = core.create_warp(warp_name=warp_name)
+
+            # Check current count of items and toggle.
+            if self.warp_select.count() == 0:
+                self.toggle_buttons()
+
             self.warp_select.addItem(name)
             self.warp_select.setCurrentText(name)
 
@@ -161,8 +188,12 @@ class TimeWarp(QtWidgets.QDialog):
             None
         """
 
-        status = core.is_warp_active(current_warp)
-        self.active.setChecked(status)
+        if current_warp:
+            status = core.is_warp_active(current_warp)
+            self.active.setChecked(status)
+
+        if self.warp_select.count() == 0:
+            self.toggle_buttons()
 
     def on_add(self):
         """ On adding objects to warp check for selection.
