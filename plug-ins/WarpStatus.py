@@ -127,10 +127,10 @@ def initializePlugin(plugin):
 
 
 def uninitializePlugin(plugin):
-    """ Uninitialize the plugin when Maya unloads it
+    """ Un-initialize the plugin when Maya unloads it
 
     Args:
-        plugin: Pluigin to unload.
+        plugin: Plugin to unload.
 
     Returns:
         Nome
