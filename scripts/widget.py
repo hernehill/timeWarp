@@ -36,7 +36,7 @@ class TimeWarp(QtWidgets.QDialog):
         self.help_menu = self.menu_bar.addMenu("Help")
         main_layout.setMenuBar(self.menu_bar)
 
-        help_action = QtWidgets.QAction("Help Doc", self)
+        help_action = QtWidgets.QAction("Docs", self)
         help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
             QtCore.QUrl("http://www.adambakerart.com")))
         self.help_menu.addAction(help_action)
