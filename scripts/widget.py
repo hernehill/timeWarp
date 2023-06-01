@@ -159,7 +159,8 @@ class TimeWarp(QtWidgets.QDialog):
 
         if not status:
             QtWidgets.QMessageBox.warning(self, 'Time Warp',
-                                          'No objects selected to apply to warp.')
+                                          'No objects selected to apply to warp or selected nodes'
+                                          ' do not have any keyframes to warp.')
 
     def on_remove(self):
         """ On remove from warp check for selection.
@@ -172,7 +173,7 @@ class TimeWarp(QtWidgets.QDialog):
 
         if not status:
             QtWidgets.QMessageBox.warning(self, 'Time Warp',
-                                          'No objects selected to remove from warp.')
+                                          'No objects selected to remove from warp or selected nodes are not warped.')
 
     def on_delete(self):
         """ Action on delete of warp we need to fix the widget.
