@@ -41,10 +41,10 @@ class TimeWarp(QtWidgets.QDialog):
             QtCore.QUrl("http://www.adambakerart.com")))
         self.help_menu.addAction(help_action)
 
+        # Button Layout.
         select_layout = QtWidgets.QHBoxLayout()
         main_layout.addLayout(select_layout)
 
-        # Button Layout.
         self.create_warp_btn = QtWidgets.QPushButton("Create")
         self.create_warp_btn.setFixedWidth(70)
         self.create_warp_btn.setFixedHeight(30)
