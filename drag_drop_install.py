@@ -1,6 +1,6 @@
 """ Drag and drop install information."""
 # Python
-from PySide2 import QtWidgets, QtGui
+from PySide2 import QtWidgets, QtGui, QtCore
 import os
 import sys
 from shiboken2 import wrapInstance
@@ -25,6 +25,7 @@ class WarpInstall(QtWidgets.QDialog):
         self.parent = parent
 
         self.setWindowTitle("Time Warp Install")
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
         self.setMinimumWidth(600)
 
