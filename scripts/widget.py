@@ -54,7 +54,7 @@ class TimeWarp(QtWidgets.QDialog):
         self.select_warp_btn = QtWidgets.QPushButton("Select Warp")
         self.select_warp_btn.setFixedHeight(45)
         self.select_warp_btn.clicked.connect(lambda: core.select_warp_curve(self.warp_select.currentText()))
-        main_layout.addWidget(self.select_btn)
+        main_layout.addWidget(self.select_warp_btn)
 
         self.select_warped_btn = QtWidgets.QPushButton("Select Warped")
         self.select_warped_btn.setFixedHeight(45)
