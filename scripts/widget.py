@@ -100,7 +100,11 @@ class TimeWarp(QtWidgets.QDialog):
 
         self.delete_btn = QtWidgets.QPushButton("Delete Warp")
         self.delete_btn.setEnabled(False)
-        self.delete_btn.setStyleSheet("background-color : #E74C3C")
+        self.delete_btn.setStyleSheet("""
+        QPushButton {background-color : #E74C3C } 
+        QPushButton:disabled { background-color: #B0574D; }
+        """)
+
         self.delete_btn.clicked.connect(self.on_delete)
         main_layout.addWidget(self.delete_btn)
 
