@@ -24,7 +24,8 @@ class TimeWarp(QtWidgets.QDialog):
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
 
         self.setGeometry(300, 300, 300, 350)
-        self.setMinimumSize(400, 350)
+        self.setMinimumSize(400, 400)
+        self.setMaximumHeight(420)
 
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setAlignment(QtCore.Qt.AlignTop)
