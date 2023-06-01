@@ -31,6 +31,7 @@ class TimeWarp(QtWidgets.QDialog):
         main_layout.setAlignment(QtCore.Qt.AlignTop)
         self.setLayout(main_layout)
 
+        # Menu Bar.
         self.menu_bar = QtWidgets.QMenuBar()
         self.help_menu = self.menu_bar.addMenu("Help")
         main_layout.setMenuBar(self.menu_bar)
@@ -43,6 +44,7 @@ class TimeWarp(QtWidgets.QDialog):
         select_layout = QtWidgets.QHBoxLayout()
         main_layout.addLayout(select_layout)
 
+        # Button Layout.
         self.create_warp_btn = QtWidgets.QPushButton("Create")
         self.create_warp_btn.setFixedWidth(70)
         self.create_warp_btn.setFixedHeight(30)
