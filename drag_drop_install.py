@@ -143,7 +143,6 @@ def onMayaDroppedPythonFile(*args, **kwargs):
     Returns:
         None
     """
-    print('install')
     installer = WarpInstall(mayaMainWindow())
     installer.show()
 
