@@ -282,13 +282,15 @@ def bake_warp(warp, steps=1):
 
     warped_nodes = get_warped_nodes(warp)
 
-    frame_start = maya.cmds.playbackOptions(query=True, minTime=True, animationStartTime=False)
-    frame_end = maya.cmds.playbackOptions(query=True, maxTime=True, animationEndTime=False)
+    if warped_nodes:
 
-    maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
-                          simulation=True, preserveOutsideKeys=True)
+        frame_start = maya.cmds.playbackOptions(query=True, minTime=True, animationStartTime=False)
+        frame_end = maya.cmds.playbackOptions(query=True, maxTime=True, animationEndTime=False)
 
-    delete_warp(warp)
+        maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
+                              simulation=True, preserveOutsideKeys=True)
+
+        delete_warp(warp)
 
 
 def is_warp_active(warp):
