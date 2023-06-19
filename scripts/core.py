@@ -199,7 +199,7 @@ def get_warped_nodes(warp):
         list of nodes effected by warp.
     """
 
-    warped = list
+    warped = []
 
     curves = maya.cmds.listConnections(warp, source=False, destination=True, skipConversionNodes=True)
 

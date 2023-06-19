@@ -30,10 +30,27 @@ class WarpInstall(QtWidgets.QDialog):
         self.setMinimumWidth(600)
 
         main_layout = QtWidgets.QVBoxLayout(self)
+        main_layout.setAlignment(QtCore.Qt.AlignTop)
+
+        # Menu Bar.
+        self.menu_bar = QtWidgets.QMenuBar()
+        self.help_menu = self.menu_bar.addMenu("Help")
+        main_layout.setMenuBar(self.menu_bar)
+
+        help_action = QtWidgets.QAction("Docs", self)
+        help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
+            QtCore.QUrl("http://www.adambakerart.com")))
+        self.help_menu.addAction(help_action)
+
+        version = QtWidgets.QAction("Version: 1.0", self)
+        version.setEnabled(False)
+        self.help_menu.addAction(version)
+
         script_layout = QtWidgets.QHBoxLayout(self)
         main_layout.addLayout(script_layout)
 
-        self.scripts_label = QtWidgets.QLabel("Scripts Path")
+        self.scripts_label = QtWidgets.QLabel("Scripts Path  ")
+        self.scripts_label.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         script_layout.addWidget(self.scripts_label, 6)
 
         script_path = install.get_script_path()
@@ -49,6 +66,7 @@ class WarpInstall(QtWidgets.QDialog):
         main_layout.addLayout(module_layout)
         
         self.module_label = QtWidgets.QLabel("Module Path")
+        self.module_label.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         module_layout.addWidget(self.module_label, 6)
 
         mod_path = install.get_module_path()
