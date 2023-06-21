@@ -191,7 +191,7 @@ def create_shelf_button(force=False):
         force (bool | False): If button should be made with force..
 
     Returns:
-        None
+        bool if shelf button is created.
     """
 
     icon = os.path.join(ICON_PATH, "TimeWarpShelf.svg")
@@ -200,7 +200,7 @@ def create_shelf_button(force=False):
 
     # Get all the children buttons of the shelf layout
     shelf_buttons = maya.cmds.shelfLayout(maya.cmds.shelfLayout('Custom', query=True, fullPathName=True),
-                                          query=True, childArray=True)
+                                          query=True, childArray=True) or []
 
     # Check if any button matches the label
     button_exists = any(maya.cmds.shelfButton(button, query=True, label=True) == 'Launch Time Warp GUI'
@@ -210,3 +210,7 @@ def create_shelf_button(force=False):
         maya.cmds.shelfButton(label='Launch Time Warp GUI', parent='Custom', command=command, image=icon,
                               imageOverlayLabel="", annotation='Launch Time Warp GUI',
                               noDefaultPopup=True, sourceType='python')
+
+        return True
+
+    return False

@@ -25,9 +25,9 @@ class WarpInstall(QtWidgets.QDialog):
         self.parent = parent
 
         self.setWindowTitle("Time Warp Install")
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
         self.setMinimumWidth(600)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
 
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setAlignment(QtCore.Qt.AlignTop)
@@ -80,7 +80,7 @@ class WarpInstall(QtWidgets.QDialog):
 
         self.install_button = QtWidgets.QPushButton(parent=self, text="Install Time Warp")
         self.install_button.setStyleSheet("background-color : #16A085")
-        self.install_button.clicked.connect(lambda: install.install(self.module_path.text()))
+        self.install_button.clicked.connect(self.run_install)
         main_layout.addWidget(self.install_button)
 
     def browse_modules_path(self):
@@ -110,6 +110,34 @@ class WarpInstall(QtWidgets.QDialog):
         if not directory:
             return
         self.script_path.setText(directory)
+
+    def run_install(self):
+        """ Run install and create shelf button if needed.
+
+        Returns:
+            None
+        """
+
+        install.install(self.script_path.text(), self.module_path.text())
+
+        shelf_question = QtWidgets.QMessageBox.question(self, 'Time Warp',
+                                                        'Would you like to install shelf button to launch GUI?',
+                                                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+
+        # Check the user's response
+        if shelf_question == QtWidgets.QMessageBox.Yes:
+            result = install.create_shelf_button()
+
+            if not result:
+                shelf_question_force = QtWidgets.QMessageBox.question(self,
+                                                                      'Time Warp',
+                                                                      'Looks like you already have a shelf button. '
+                                                                      'Would you like to make another?',
+                                                                      QtWidgets.QMessageBox.Yes |
+                                                                      QtWidgets.QMessageBox.No)
+
+                if shelf_question_force == QtWidgets.QMessageBox.Yes:
+                    install.create_shelf_button(force=True)
 
     def closeEvent(self, event):
         """ Close event.
