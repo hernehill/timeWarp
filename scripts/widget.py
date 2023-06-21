@@ -248,9 +248,10 @@ class TimeWarp(QtWidgets.QDialog):
 
         current_warp = self.warp_select.currentText()
 
-        core.bake_warp(current_warp)
+        baked = core.bake_warp(current_warp)
 
-        self.warp_select.removeItem(self.warp_select.findText(current_warp))
+        if baked:
+            self.warp_select.removeItem(self.warp_select.findText(current_warp))
 
 
 def launch():

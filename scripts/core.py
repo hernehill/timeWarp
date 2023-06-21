@@ -277,7 +277,7 @@ def bake_warp(warp, steps=1):
         steps (int | 1): How often to bake.
 
     Returns:
-        None
+        True if baked out.
     """
 
     warped_nodes = get_warped_nodes(warp)
@@ -291,6 +291,10 @@ def bake_warp(warp, steps=1):
                               simulation=True, preserveOutsideKeys=True)
 
         delete_warp(warp)
+
+        return True
+
+    return False
 
 
 def is_warp_active(warp):
