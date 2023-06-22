@@ -3,6 +3,8 @@
 import maya.OpenMaya as om
 import maya.OpenMayaMPx as ompx
 
+from . import __version__, __doc__, __author__, __email__, __copyright__
+
 
 class WarpStatus(ompx.MPxNode):
 
@@ -112,8 +114,8 @@ def initializePlugin(plugin):
         None
     """
 
-    vendor = "Adam Baker"
-    version = "1.0.0"
+    vendor = __author__
+    version = __version__
     api_version = "Any"
 
     plugin_fn = ompx.MFnPlugin(plugin, vendor, version, api_version)

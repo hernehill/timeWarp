@@ -14,6 +14,7 @@ import maya.OpenMayaUI as omui
 
 # Custom
 from scripts import install
+from . import __version__, __doc__, __author__, __email__, __copyright__
 
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
 
@@ -39,10 +40,10 @@ class WarpInstall(QtWidgets.QDialog):
 
         help_action = QtWidgets.QAction("Docs", self)
         help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
-            QtCore.QUrl("http://www.adambakerart.com")))
+            QtCore.QUrl(__doc__)))
         self.help_menu.addAction(help_action)
 
-        version = QtWidgets.QAction("Version: 1.0", self)
+        version = QtWidgets.QAction("Version: {}".format(__version__), self)
         version.setEnabled(False)
         self.help_menu.addAction(version)
 

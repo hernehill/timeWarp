@@ -9,6 +9,8 @@ import shutil
 import maya.mel
 import maya.cmds
 
+from . import __version__, __doc__, __author__, __email__, __copyright__
+
 
 MOD_INPUT_TEXT = "+ timeWarp 1.0 ABAB/timeWarp\n"\
                  "scripts: ./scripts"
