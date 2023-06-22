@@ -46,6 +46,10 @@ class TimeWarp(QtWidgets.QDialog):
         version.setEnabled(False)
         self.help_menu.addAction(version)
 
+        author = QtWidgets.QAction("Author: {}".format(__author__), self)
+        author.setEnabled(False)
+        self.help_menu.addAction(author)
+
         # Button Layout.
         select_layout = QtWidgets.QHBoxLayout()
         main_layout.addLayout(select_layout)

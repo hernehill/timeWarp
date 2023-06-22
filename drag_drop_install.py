@@ -47,6 +47,10 @@ class WarpInstall(QtWidgets.QDialog):
         version.setEnabled(False)
         self.help_menu.addAction(version)
 
+        author = QtWidgets.QAction("Author: {}".format(__author__), self)
+        author.setEnabled(False)
+        self.help_menu.addAction(author)
+
         script_layout = QtWidgets.QHBoxLayout(self)
         main_layout.addLayout(script_layout)
 
