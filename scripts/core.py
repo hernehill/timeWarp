@@ -7,7 +7,7 @@ import re
 import maya.cmds
 import maya.mel
 
-from . import __version__, __doc__, __author__, __email__, __copyright__
+from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 
 # Maya's main progress bar
 MAIN_PROGRESS_BAR = maya.mel.eval('$tmp = $gMainProgressBar')

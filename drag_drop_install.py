@@ -14,7 +14,7 @@ import maya.OpenMayaUI as omui
 
 # Custom
 from scripts import install
-from . import __version__, __doc__, __author__, __email__, __copyright__
+from _versions import __version__, __doc__, __author__, __email__, __copyright__
 
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
 

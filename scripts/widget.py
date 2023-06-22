@@ -6,7 +6,7 @@ import os
 # Qt
 from PySide2 import QtCore, QtWidgets, QtGui
 
-from . import __version__, __doc__, __author__, __email__, __copyright__
+from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 from timeWarp.scripts import core
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../', 'icons')
 

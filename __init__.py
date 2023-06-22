@@ -1,8 +1,1 @@
-from ._versions import VERSION, HELP_DOC, AUTHOR, EMAIL, COPYRIGHT
-
-__version__ = VERSION
-__doc__ = HELP_DOC
-__author__ = AUTHOR
-__email__ = EMAIL
-__copyright__ = COPYRIGHT
-
+from ._versions import __version__, __doc__, __author__, __email__, __copyright__
