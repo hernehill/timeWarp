@@ -213,6 +213,8 @@ def create_shelf_button(force=False):
                               imageOverlayLabel="", annotation='Launch Time Warp GUI',
                               noDefaultPopup=True, sourceType='python')
 
+        maya.cmds.shelfTabLayout('ShelfLayout', edit=True, selectTab='Custom')
+
         return True
 
     return False
