@@ -3,7 +3,11 @@
 import maya.OpenMaya as om
 import maya.OpenMayaMPx as ompx
 
-from . import __version__, __doc__, __author__, __email__, __copyright__
+import maya.cmds
+
+
+__version__ = "1.0.0"
+__author__ = "Adam Baker"
 
 
 class WarpStatus(ompx.MPxNode):
@@ -103,6 +107,83 @@ class WarpStatus(ompx.MPxNode):
         WarpStatus.attributeAffects(WarpStatus.warpInputAttr, WarpStatus.outputAttr)
         WarpStatus.attributeAffects(WarpStatus.timeInputAttr, WarpStatus.outputAttr)
 
+    @staticmethod
+    def create_menu():
+        """ Create menu on initialize of the plugin
+
+        Returns:
+            None
+        """
+
+        menu_name = "ATKMenu"
+        parent = maya.mel.eval('$temp = $gMainWindow;')
+
+        # Check to see if we have menu or not.
+        if maya.cmds.menu(menu_name, exists=True):
+            menu_parent = "{}|{}".format(parent, menu_name)
+        # Make it if not existing.
+        else:
+            menu_parent = maya.cmds.menu(menu_name, label="ATK", parent=parent)
+
+        maya.cmds.menuItem("ATKTimeWarpDividerMenu",
+                           divider=True,
+                           parent=menu_parent
+                           )
+        main_menu = maya.cmds.menuItem("ATKTimeWarpMenu",
+                                       label="Time Warp",
+                                       subMenu=True,
+                                       parent=menu_parent
+                                       )
+
+        maya.cmds.menuItem("ATKTimeWarpOpenMenu",
+                           label="Launch...",
+                           command="from timeWarp.scripts import widget; widget.launch()",
+                           sourceType="Python",
+                           parent=main_menu
+                           )
+
+        help_menu = maya.cmds.menuItem("ATKTimeWarpHelpMenu",
+                                       label="Help",
+                                       subMenu=True,
+                                       parent=main_menu
+                                       )
+
+        maya.cmds.menuItem("ATKTimeWarpDocsMenu",
+                           label="Docs",
+                           command="QtGui.QDesktopServices.openUrl(QtCore.QUrl(__doc__))",
+                           sourceType="Python",
+                           parent=help_menu
+                           )
+
+        maya.cmds.menuItem("ATKTimeWarpVersionMenu",
+                           label="Version: {}" .format(__version__),
+                           parent=help_menu,
+                           enable=False
+                           )
+        maya.cmds.menuItem("ATKTimeWarpAuthorMenu",
+                           label="Author: {}" .format(__author__),
+                           parent=help_menu,
+                           enable=False
+                           )
+
+    @staticmethod
+    def delete_menu():
+        """ Delete menu or menu items on un-initialize of the plugin
+
+        Returns:
+            None
+        """
+
+        menu_name = "ATKMenu"
+
+        # Check if we have other ATK tools first if so just delete time warp.
+        if maya.cmds.menu(menu_name, query=True, numberOfItems=True) > 1:
+            maya.cmds.deleteUI("ATKTimeWarpMenu", menuItem=True)
+            maya.cmds.deleteUI("ATKTimeWarpDividerMenu", menuItem=True)
+
+        else:
+            maya.cmds.deleteUI(menu_name)
+
 
 def initializePlugin(plugin):
     """ Initialize the plugin when Maya loads it.
@@ -124,6 +205,8 @@ def initializePlugin(plugin):
                                WarpStatus.TYPE_ID,
                                WarpStatus.creator,
                                WarpStatus.initialize)
+        WarpStatus.create_menu()
+
     except:
         om.MGlobal.displayError("Failed to register node: {0}".format(WarpStatus.TYPE_NAME))
 
@@ -137,9 +220,11 @@ def uninitializePlugin(plugin):
     Returns:
         Nome
     """
-    plugin_fn = om.MFnPlugin(plugin)
+    plugin_fn = ompx.MFnPlugin(plugin)
 
     try:
         plugin_fn.deregisterNode(WarpStatus.TYPE_ID)
+        WarpStatus.delete_menu()
+
     except:
         om.MGlobal.displayError("Failed to unregister node: {0}".format(WarpStatus.TYPE_NAME))
