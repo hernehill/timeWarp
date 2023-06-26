@@ -9,8 +9,11 @@ import shutil
 import maya.mel
 import maya.cmds
 
-MOD_INPUT_TEXT = "+ timeWarp 1.0 ABAB/timeWarp\n"\
-                 "scripts: ./scripts"
+__version__ = '1.0.0'
+
+MOD_INPUT_TEXT = "+ timeWarp x.x PATH/timeWarp\n"\
+                 "scripts: ./scripts\n"\
+                 "icons: ./icons"
 
 TIMEWARP_MOD = "timeWarp.mod"
 
@@ -75,7 +78,8 @@ def build_mod_file(module_path, scripts_path):
         if successful return str of path to mod file.
     """
 
-    mod_text = MOD_INPUT_TEXT.replace("ABAB", scripts_path)
+    mod_text = MOD_INPUT_TEXT.replace("PATH", scripts_path)
+    mod_text = mod_text.replace("x.x", __version__)
 
     # Check if "maya/modules" folder already exists
     module_file_path = os.path.join(module_path, TIMEWARP_MOD)
