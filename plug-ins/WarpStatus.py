@@ -6,8 +6,7 @@ import maya.OpenMayaMPx as ompx
 import maya.cmds
 
 
-__version__ = "1.0.0"
-__author__ = "Adam Baker"
+from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 
 
 class WarpStatus(ompx.MPxNode):
@@ -150,7 +149,7 @@ class WarpStatus(ompx.MPxNode):
 
         maya.cmds.menuItem("ATKTimeWarpDocsMenu",
                            label="Docs",
-                           command="QtGui.QDesktopServices.openUrl(QtCore.QUrl(__doc__))",
+                           command="import webbrowser; webbrowser.open(__doc__))",
                            sourceType="Python",
                            parent=help_menu
                            )
