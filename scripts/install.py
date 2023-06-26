@@ -9,8 +9,6 @@ import shutil
 import maya.mel
 import maya.cmds
 
-__version__ = '1.0.0'
-
 MOD_INPUT_TEXT = "+ timeWarp x.x PATH/timeWarp\n"\
                  "scripts: ./scripts\n"\
                  "icons: ./icons"
@@ -21,17 +19,18 @@ TIMEWARP_MOD = "timeWarp.mod"
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../', 'icons')
 
 
-def install(module_path, script_path):
+def install(module_path, script_path, version):
     """ Install files based on location set in GUI
 
     Args:
         module_path (str): Path to where modules should be saved.
         script_path (str): Path to where scripts should be saved.
+        version (str): Version number.
 
     Returns:
         None
     """
-    build_mod_file(module_path, script_path)
+    build_mod_file(module_path, script_path, version)
     plugin_path = transfer_scripts(script_path)
     load_plugin(plugin_path)
 
@@ -67,19 +66,20 @@ def installed_mod_path():
             return path
 
 
-def build_mod_file(module_path, scripts_path):
+def build_mod_file(module_path, scripts_path, version):
     """ Build moc file and copy it to correct location.
 
     Args:
         module_path (str): Module path location.
         scripts_path (str): Scripts path location.
+        version (str): Version number.
 
     Returns:
         if successful return str of path to mod file.
     """
 
     mod_text = MOD_INPUT_TEXT.replace("PATH", scripts_path)
-    mod_text = mod_text.replace("x.x", __version__)
+    mod_text = mod_text.replace("x.x", version)
 
     # Check if "maya/modules" folder already exists
     module_file_path = os.path.join(module_path, TIMEWARP_MOD)

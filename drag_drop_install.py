@@ -123,7 +123,7 @@ class WarpInstall(QtWidgets.QDialog):
             None
         """
 
-        install.install(self.module_path.text(), self.script_path.text())
+        install.install(self.module_path.text(), self.script_path.text(), __version__)
 
         shelf_question = QtWidgets.QMessageBox.question(self, 'Time Warp',
                                                         'Would you like to install shelf button to launch GUI?',
