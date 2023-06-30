@@ -7,7 +7,7 @@ called warpStatus and the GUI interface that allows you to add remove and bake o
 ## Install
 TimeWarp can be installed in multiple ways.
 ### Drag and Drop
-For simple installation use the drag_drop_install.py file into maya's viewport. This will launch a GUI follow promps to install.
+For simple installation use the drag_drop_install.py file into maya's viewport. This will launch a GUI follow the prompts to install.
 
 ### Manual Install
 1. Copy the folder "timeWarp" into your maya/scripts/ preferences directory. So your resulting path will be like:
