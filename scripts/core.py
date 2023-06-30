@@ -86,6 +86,7 @@ def apply_warp(warp_node):
         return False
 
     with ProgressBarContextManager(len(input_nodes), message="Adding Input Nodes.") as progress_bar:
+        maya.cmds.undoInfo(openChunk=True, stateWithoutFlush=True)
         for connection in input_nodes:
             node_type = maya.cmds.nodeType(connection)
 
@@ -93,6 +94,8 @@ def apply_warp(warp_node):
                 maya.cmds.connectAttr("{}.output".format(warp_node), '{}.input'.format(connection), force=True)
 
             progress_bar.update_progress()
+
+        maya.cmds.undoInfo(closeChunk=True, stateWithoutFlush=True)
 
     return True
 
