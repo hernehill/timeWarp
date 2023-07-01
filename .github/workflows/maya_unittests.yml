@@ -1,0 +1,52 @@
+name: ATK Maya Unittests
+
+# Run tests on any push or pullRequest event
+on: [push, pull_request]
+
+
+jobs:
+  maya2020:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Run Unittests
+      uses: docker://mottosso/maya:2020 # For all available Maya versions, see https://github.com/mottosso/docker-maya
+      with:
+        args: /usr/autodesk/maya/bin/mayapy -m unittest discover -s ./tests -v
+
+  maya2022-1:
+    runs-on: ubuntu-latest
+    env:
+      MAYA_NOSTANDALONE_ATEXIT: 1
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Run Unittests
+      uses: docker://mottosso/maya:2022.1 # For all available Maya versions, see https://github.com/mottosso/docker-maya
+      with:
+        args: /usr/autodesk/maya/bin/mayapy -m unittest discover -s ./tests -v
+
+  maya2023:
+    runs-on: ubuntu-latest
+    env:
+      MAYA_NOSTANDALONE_ATEXIT: 1
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Run Unittests
+      uses: docker://mottosso/maya:2023 # For all available Maya versions, see https://github.com/mottosso/docker-maya
+      with:
+        args: /usr/autodesk/maya/bin/mayapy -m unittest discover -s ./tests -v
+
+  maya2024:
+    runs-on: ubuntu-latest
+    env:
+      MAYA_NOSTANDALONE_ATEXIT: 1
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Run Unittests
+      uses: docker://mottosso/maya:2024 # For all available Maya versions, see https://github.com/mottosso/docker-maya
+      with:
+        args: /usr/autodesk/maya/bin/mayapy -m unittest discover -s ./tests -v
