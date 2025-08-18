@@ -275,12 +275,15 @@ def select_warp_curve(warp):
         maya.cmds.select(clear=True)
 
 
-def bake_warp(warp, steps=1):
+def bake_warp(warp, steps=1, outside_keys=True, layer=False, layer_name=""):
     """ Bake out warp and delete.
 
     Args:
         warp (str): Maya warp node.
         steps (int | 1): How often to bake.
+        outside_keys (bool | True): If we maintain outside Keys.
+        layer (bool | False): If animation is baked onto a override layer.
+        layer_name (str | ''): Name of curve.
 
     Returns:
         True if baked out.
@@ -294,7 +297,10 @@ def bake_warp(warp, steps=1):
         frame_end = maya.cmds.playbackOptions(query=True, maxTime=True, animationEndTime=False)
 
         maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
-                              simulation=True, preserveOutsideKeys=True)
+                              simulation=True, preserveOutsideKeys=outside_keys, bakeOnOverrideLayer=layer)
+
+        if layer and layer_name:
+            maya.cmds.rename(maya.cmds.ls(type="animLayer")[0], f"{layer_name}Result")
 
         return True
 

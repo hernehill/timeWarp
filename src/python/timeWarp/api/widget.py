@@ -4,7 +4,7 @@
 import os
 
 # Qt
-from PySide2 import QtCore, QtWidgets, QtGui
+from timeWarp.qt_compat import QtCore, QtGui, QtWidgets, QAction
 
 from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 from timeWarp.api import core
@@ -25,28 +25,38 @@ class TimeWarp(QtWidgets.QDialog):
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
 
         self.setGeometry(300, 300, 300, 350)
-        self.setMinimumSize(400, 400)
+        self.setMinimumSize(450, 400)
         self.setMaximumHeight(420)
 
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setAlignment(QtCore.Qt.AlignTop)
         self.setLayout(main_layout)
 
-        # Menu Bar.
+        # Menu Bar
         self.menu_bar = QtWidgets.QMenuBar()
+
+        # Menu Bar - Settings
+        self.settings_menu = self.menu_bar.addMenu("Settings")
+
+        self.outside_key_action = QAction("Preserve Outside Keys", self)
+        self.outside_key_action.setCheckable(True)
+        self.outside_key_action.setChecked(True)
+        self.settings_menu.addAction(self.outside_key_action)
+
+        # Menu Bar - Help
         self.help_menu = self.menu_bar.addMenu("Help")
         main_layout.setMenuBar(self.menu_bar)
 
-        help_action = QtWidgets.QAction("Docs", self)
+        help_action = QAction("Docs", self)
         help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
             QtCore.QUrl(__doc__)))
         self.help_menu.addAction(help_action)
 
-        version = QtWidgets.QAction("Version: {}" .format(__version__), self)
+        version = QAction("Version: {}" .format(__version__), self)
         version.setEnabled(False)
         self.help_menu.addAction(version)
 
-        author = QtWidgets.QAction("Author: {}".format(__author__), self)
+        author = QAction("Author: {}".format(__author__), self)
         author.setEnabled(False)
         self.help_menu.addAction(author)
 
@@ -72,6 +82,11 @@ class TimeWarp(QtWidgets.QDialog):
         self.active.setEnabled(False)
         self.active.toggled.connect(self.set_active_status)
         select_layout.addWidget(self.active)
+
+        self.reload_warps_btn = QtWidgets.QPushButton("")
+        self.reload_warps_btn.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'TimeWarpReload.svg')))
+        self.reload_warps_btn.toggled.connect(self.on_reload)
+        select_layout.addWidget(self.reload_warps_btn)
 
         self.select_warp_btn = QtWidgets.QPushButton("Select Warp")
         self.select_warp_btn.setEnabled(False)
@@ -100,8 +115,22 @@ class TimeWarp(QtWidgets.QDialog):
         self.bake_btn = QtWidgets.QPushButton("Bake Warp")
         self.bake_btn.setEnabled(False)
         self.bake_btn.setFixedHeight(45)
+        self.bake_btn.setStyleSheet("""
+        QPushButton {background-color : #3C82E7 } 
+        QPushButton:disabled { background-color: #4D75B0; }
+        """)
         self.bake_btn.clicked.connect(self.on_bake)
         main_layout.addWidget(self.bake_btn)
+
+        self.bake_layer_btn = QtWidgets.QPushButton("Bake to Layer")
+        self.bake_layer_btn.setEnabled(False)
+        self.bake_layer_btn.setFixedHeight(45)
+        self.bake_layer_btn.setStyleSheet("""
+        QPushButton {background-color : #3C82E7 } 
+        QPushButton:disabled { background-color: #4D75B0; }
+        """)
+        self.bake_layer_btn.clicked.connect(lambda: self.on_bake(layer=True))
+        main_layout.addWidget(self.bake_layer_btn)
 
         self.delete_btn = QtWidgets.QPushButton("Delete Warp")
         self.delete_btn.setEnabled(False)
@@ -128,6 +157,7 @@ class TimeWarp(QtWidgets.QDialog):
         self.add_btn.setEnabled(not self.add_btn.isEnabled())
         self.remove_btn.setEnabled(not self.remove_btn.isEnabled())
         self.bake_btn.setEnabled(not self.bake_btn.isEnabled())
+        self.bake_layer_btn.setEnabled(not self.bake_layer_btn.isEnabled())
         self.delete_btn.setEnabled(not self.delete_btn.isEnabled())
 
     def add_scene_data(self):
@@ -244,8 +274,11 @@ class TimeWarp(QtWidgets.QDialog):
 
         self.warp_select.removeItem(self.warp_select.findText(current_warp))
 
-    def on_bake(self):
+    def on_bake(self, layer=False):
         """ Action on bake of warp we need to fix the widget.
+
+        Args:
+            layer (bool | False): If animation is baked onto a override layer.
 
         Returns:
             None
@@ -253,10 +286,24 @@ class TimeWarp(QtWidgets.QDialog):
 
         current_warp = self.warp_select.currentText()
 
-        baked = core.bake_warp(current_warp)
+        outside_keys = self.outside_key_action.isChecked()
+
+        baked = core.bake_warp(current_warp, outside_keys=outside_keys, layer=layer,
+                               layer_name=self.warp_select.currentText())
 
         if baked:
             self.warp_select.removeItem(self.warp_select.findText(current_warp))
+
+    def on_reload(self):
+        """ Update the GUI to reload the old warps
+
+        Returns:
+            None
+        """
+
+        self.warp_select.clear()
+
+        self.add_scene_data()
 
 
 def launch():
