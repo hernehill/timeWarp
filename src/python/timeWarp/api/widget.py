@@ -8,6 +8,7 @@ from timeWarp.qt_compat import QtCore, QtGui, QtWidgets, QAction
 
 from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 from timeWarp.api import core
+
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../', 'icons')
 
 _WIDGET = None
