@@ -199,7 +199,7 @@ def create_shelf_button(force=False):
 
     icon = os.path.join(ICON_PATH, "TimeWarpShelf.svg")
 
-    command = 'from timeWarp.api import widget; widget.launch()'
+    command = 'from timeWarp.gui import widget; widget.launch()'
 
     # Get all the children buttons of the shelf layout
     shelf_buttons = maya.cmds.shelfLayout(maya.cmds.shelfLayout('Custom', query=True, fullPathName=True),
