@@ -1,6 +1,6 @@
 name = 'timeWarp'
 
-version = '2.0.0.hh.1.0.0'
+version = '2.0.0.hh.1.0.1'
 
 authors = [
     'Adam Baker',
@@ -24,7 +24,7 @@ variants = [
 
 def commands():
     env.REZ_TIMEWARP_ROOT = '{root}'
-    env.PYTHONPATH.append('{root}')
+    env.PYTHONPATH.append('{root}/src/python')
 
 
 build_command = 'rez python {root}/rez_build.py'
