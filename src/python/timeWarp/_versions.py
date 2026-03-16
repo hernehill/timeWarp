@@ -1,6 +1,6 @@
 """ Version Information"""
 
-__version__ = '1.0.0'
+__version__ = '2.0.0'
 __doc__ = 'http://www.adambakerart.com'
 __author__ = 'Adam Baker'
 __email__ = 'Adam@AdamBakerArt.com'
