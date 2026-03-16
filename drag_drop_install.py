@@ -1,7 +1,7 @@
 """ Drag and drop install information."""
 # Python
 
-from src.python.timeWarp.qt_compat import QtCore, QtGui, QtWidgets, QAction, wrapInstance
+from src.python.timeWarp.qt_compat import *
 
 import os
 import sys
@@ -40,16 +40,16 @@ class WarpInstall(QtWidgets.QDialog):
         self.help_menu = self.menu_bar.addMenu("Help")
         main_layout.setMenuBar(self.menu_bar)
 
-        help_action = QAction("Docs", self)
+        help_action = QtWidgets.QAction("Docs", self)
         help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
             QtCore.QUrl(__doc__)))
         self.help_menu.addAction(help_action)
 
-        version = QAction("Version: {}".format(__version__), self)
+        version = QtWidgets.QAction("Version: {}".format(__version__), self)
         version.setEnabled(False)
         self.help_menu.addAction(version)
 
-        author = QAction("Author: {}".format(__author__), self)
+        author = QtWidgets.QAction("Author: {}".format(__author__), self)
         author.setEnabled(False)
         self.help_menu.addAction(author)
 
@@ -165,7 +165,7 @@ def mayaMainWindow():
         wrapped instance of maya main window.
     """
     main_window_ptr = omui.MQtUtil.mainWindow()
-    return wrapInstance(long(main_window_ptr), QtWidgets.QWidget)
+    return shiboken.wrapInstance(long(main_window_ptr), QtWidgets.QWidget)
 
 
 def onMayaDroppedPythonFile(*args, **kwargs):

@@ -4,7 +4,7 @@
 import os
 
 # Qt
-from timeWarp.qt_compat import QtCore, QtGui, QtWidgets, QAction
+from timeWarp.qt_compat import *
 
 from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 from timeWarp.api import core
@@ -39,7 +39,7 @@ class TimeWarp(QtWidgets.QDialog):
         # Menu Bar - Settings
         self.settings_menu = self.menu_bar.addMenu("Settings")
 
-        self.outside_key_action = QAction("Preserve Outside Keys", self)
+        self.outside_key_action = QtWidgets.QAction("Preserve Outside Keys", self)
         self.outside_key_action.setCheckable(True)
         self.outside_key_action.setChecked(True)
         self.settings_menu.addAction(self.outside_key_action)
@@ -48,16 +48,16 @@ class TimeWarp(QtWidgets.QDialog):
         self.help_menu = self.menu_bar.addMenu("Help")
         main_layout.setMenuBar(self.menu_bar)
 
-        help_action = QAction("Docs", self)
+        help_action = QtWidgets.QAction("Docs", self)
         help_action.triggered.connect(lambda: QtGui.QDesktopServices.openUrl(
             QtCore.QUrl(__doc__)))
         self.help_menu.addAction(help_action)
 
-        version = QAction("Version: {}" .format(__version__), self)
+        version = QtWidgets.QAction("Version: {}" .format(__version__), self)
         version.setEnabled(False)
         self.help_menu.addAction(version)
 
-        author = QAction("Author: {}".format(__author__), self)
+        author = QtWidgets.QAction("Author: {}".format(__author__), self)
         author.setEnabled(False)
         self.help_menu.addAction(author)
 

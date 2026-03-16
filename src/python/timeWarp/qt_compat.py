@@ -1,7 +1,6 @@
 """ QT File to set the correct type to allow for Maya 2026+"""
 try:
     from PySide2 import QtCore, QtGui, QtWidgets, QtOpenGL
-    from PySide2.QtWidgets import QAction
     import shiboken2 as shiboken
 
 except ImportError:

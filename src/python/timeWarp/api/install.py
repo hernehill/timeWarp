@@ -10,8 +10,8 @@ import maya.mel
 import maya.cmds
 
 MOD_INPUT_TEXT = "+ timeWarp x.x PATH/timeWarp\n"\
-                 "scripts: ./src/python/api\n"\
-                 "icons: ./src/python/icons"
+                 "PYTHONPATH+:=./src/python\n"\
+                 "XBMLANGPATH+:=./src/python/icons"
 
 TIMEWARP_MOD = "timeWarp.mod"
 
@@ -131,7 +131,7 @@ def transfer_scripts(scripts_path):
 
     copy_files(source, destination_path)
 
-    plugin_path = os.path.join(source, 'plug-ins')
+    plugin_path = os.path.join(source, 'plug_ins')
 
     return plugin_path
 
@@ -199,7 +199,7 @@ def create_shelf_button(force=False):
 
     icon = os.path.join(ICON_PATH, "TimeWarpShelf.svg")
 
-    command = 'from timeWarp.gui import widget; widget.launch()'
+    command = 'from timeWarp.gui import main; main.launch()'
 
     # Get all the children buttons of the shelf layout
     shelf_buttons = maya.cmds.shelfLayout(maya.cmds.shelfLayout('Custom', query=True, fullPathName=True),
