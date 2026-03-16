@@ -46,7 +46,6 @@ class TimeWarp(QtWidgets.QDialog):
 
         # Build UI
         self.setWindowTitle('Time Warp')
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'WarpStatus.png')))
 
         self.setGeometry(300, 300, 300, 350)
