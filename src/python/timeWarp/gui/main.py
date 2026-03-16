@@ -13,6 +13,30 @@ ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../', 'ic
 
 _WIDGET = None
 
+BUTTON_H = 32
+
+TEAL_STYLE = """
+QPushButton { background-color: #2FA4A9; }
+QPushButton:hover { background-color: #39B7BD; }
+QPushButton:disabled { background-color: #3E6F72; }
+"""
+
+GREEN_STYLE = """
+QPushButton { background-color: #27AE60; }
+QPushButton:hover { background-color: #2ECC71; }
+QPushButton:disabled { background-color: #4D7C62; }
+"""
+
+RED_STYLE = """
+QPushButton { background-color: #E74C3C; }
+QPushButton:hover { background-color: #FF5A4A; }
+QPushButton:disabled { background-color: #B0574D; }
+"""
+
+BUTTON_STYLE = """
+QPushButton { text-align: center; }
+"""
+
 
 class TimeWarp(QtWidgets.QDialog):
     """ Time Warp Widget"""
@@ -63,83 +87,148 @@ class TimeWarp(QtWidgets.QDialog):
 
         # Button Layout.
         select_layout = QtWidgets.QHBoxLayout()
+        select_layout.setSpacing(6)
         main_layout.addLayout(select_layout)
 
         self.create_warp_btn = QtWidgets.QPushButton("Create")
         self.create_warp_btn.setFixedWidth(70)
-        self.create_warp_btn.setFixedHeight(30)
-        self.create_warp_btn.setStyleSheet("background-color : #27AE60")
+        self.create_warp_btn.setFixedHeight(BUTTON_H)
+        self.create_warp_btn.setStyleSheet(GREEN_STYLE)
+        self.create_warp_btn.setToolTip("Create a new time warp")
         self.create_warp_btn.clicked.connect(self.create_warp)
         select_layout.addWidget(self.create_warp_btn)
 
         self.warp_select = QtWidgets.QComboBox()
-        self.warp_select.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
-        self.warp_select.setFixedHeight(30)
-        self.warp_select.setMinimumWidth(170)
+        self.warp_select.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.warp_select.setFixedHeight(BUTTON_H)
         self.warp_select.currentTextChanged.connect(self.on_select_change)
         select_layout.addWidget(self.warp_select)
 
-        self.active = QtWidgets.QCheckBox("Warp Active")
+        self.active = QtWidgets.QCheckBox("Active")
         self.active.setEnabled(False)
+        self.active.setToolTip("Enable or disable the warp")
         self.active.toggled.connect(self.set_active_status)
         select_layout.addWidget(self.active)
 
         self.reload_warps_btn = QtWidgets.QPushButton("")
         self.reload_warps_btn.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'TimeWarpReload.svg')))
-        self.reload_warps_btn.toggled.connect(self.on_reload)
+        self.reload_warps_btn.setIconSize(QtCore.QSize(25, 25))
+        self.reload_warps_btn.setFixedSize(BUTTON_H, BUTTON_H)
+        self.reload_warps_btn.setStyleSheet("""
+            QPushButton { 
+                padding: 0px; 
+                margin: 0px; 
+                border: none; 
+                background-color: transparent;
+            }
+            QPushButton:hover { 
+                background-color: #3d3d3d;
+            }
+        """)
+        self.reload_warps_btn.setToolTip("Reload scene warps")
+        self.reload_warps_btn.clicked.connect(self.on_reload)
         select_layout.addWidget(self.reload_warps_btn)
 
-        self.select_warp_btn = QtWidgets.QPushButton("Select Warp")
+        # Divider
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.HLine)
+        line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        main_layout.addWidget(line)
+
+        # ----------------
+        # Selection Section
+        # ----------------
+        selection_label = QtWidgets.QLabel("Selection")
+        selection_label.setStyleSheet("font-weight: bold;")
+        main_layout.addWidget(selection_label)
+
+        selection_layout = QtWidgets.QHBoxLayout()
+        main_layout.addLayout(selection_layout)
+
+        self.select_warp_btn = QtWidgets.QPushButton("  Select Warp")
         self.select_warp_btn.setEnabled(False)
-        self.select_warp_btn.setFixedHeight(45)
-        self.select_warp_btn.clicked.connect(lambda: core.select_warp_curve(self.warp_select.currentText()))
-        main_layout.addWidget(self.select_warp_btn)
+        self.select_warp_btn.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'TimeWarpSelect.svg')))
+        self.select_warp_btn.setIconSize(QtCore.QSize(20, 20))
+        self.select_warp_btn.setFixedHeight(BUTTON_H)
+        self.select_warp_btn.clicked.connect(
+            lambda: core.select_warp_curve(self.warp_select.currentText())
+        )
+        selection_layout.addWidget(self.select_warp_btn)
 
-        self.select_warped_btn = QtWidgets.QPushButton("Select Warped")
+        self.select_warped_btn = QtWidgets.QPushButton("  Select Warped")
         self.select_warped_btn.setEnabled(False)
-        self.select_warped_btn.setFixedHeight(45)
-        self.select_warped_btn.clicked.connect(lambda: core.select_warped_nodes(self.warp_select.currentText()))
-        main_layout.addWidget(self.select_warped_btn)
+        self.select_warped_btn.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'TimeWarpSelect.svg')))
+        self.select_warped_btn.setIconSize(QtCore.QSize(20, 20))
+        self.select_warped_btn.setFixedHeight(BUTTON_H)
+        self.select_warped_btn.clicked.connect(
+            lambda: core.select_warped_nodes(self.warp_select.currentText())
+        )
+        selection_layout.addWidget(self.select_warped_btn)
 
-        self.add_btn = QtWidgets.QPushButton("Add Selected To Warp")
+        # ----------------
+        # Edit Section
+        # ----------------
+        edit_label = QtWidgets.QLabel("Edit Warp")
+        edit_label.setStyleSheet("font-weight: bold;")
+        main_layout.addWidget(edit_label)
+
+        edit_layout = QtWidgets.QHBoxLayout()
+        main_layout.addLayout(edit_layout)
+
+        self.add_btn = QtWidgets.QPushButton("  Add Selected")
         self.add_btn.setEnabled(False)
-        self.add_btn.setFixedHeight(45)
+        self.add_btn.setFixedHeight(BUTTON_H)
+        self.add_btn.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'TimeWarpAdd.svg')))
+        self.add_btn.setIconSize(QtCore.QSize(20, 20))
+        self.add_btn.setStyleSheet(BUTTON_STYLE)
+        self.add_btn.setToolTip("Add selected objects to warp")
         self.add_btn.clicked.connect(self.on_add)
-        main_layout.addWidget(self.add_btn)
+        edit_layout.addWidget(self.add_btn)
 
-        self.remove_btn = QtWidgets.QPushButton("Remove Selected From Warp")
+        self.remove_btn = QtWidgets.QPushButton("  Remove Selected")
         self.remove_btn.setEnabled(False)
-        self.remove_btn.setFixedHeight(45)
+        self.remove_btn.setFixedHeight(BUTTON_H)
+        self.remove_btn.setIcon(QtGui.QIcon(os.path.join(ICON_PATH, 'TimeWarpRemove.svg')))
+        self.remove_btn.setIconSize(QtCore.QSize(20, 20))
+        self.remove_btn.setToolTip("Remove selected objects from warp")
         self.remove_btn.clicked.connect(self.on_remove)
-        main_layout.addWidget(self.remove_btn)
+        edit_layout.addWidget(self.remove_btn)
+
+        # ----------------
+        # Bake Section
+        # ----------------
+        bake_label = QtWidgets.QLabel("Bake")
+        bake_label.setStyleSheet("font-weight: bold;")
+        main_layout.addWidget(bake_label)
+
+        bake_layout = QtWidgets.QHBoxLayout()
+        main_layout.addLayout(bake_layout)
 
         self.bake_btn = QtWidgets.QPushButton("Bake Warp")
         self.bake_btn.setEnabled(False)
-        self.bake_btn.setFixedHeight(45)
-        self.bake_btn.setStyleSheet("""
-        QPushButton {background-color : #3C82E7 } 
-        QPushButton:disabled { background-color: #4D75B0; }
-        """)
+        self.bake_btn.setFixedHeight(BUTTON_H)
+        self.bake_btn.setStyleSheet(TEAL_STYLE)
         self.bake_btn.clicked.connect(self.on_bake)
-        main_layout.addWidget(self.bake_btn)
+        bake_layout.addWidget(self.bake_btn)
 
         self.bake_layer_btn = QtWidgets.QPushButton("Bake to Layer")
         self.bake_layer_btn.setEnabled(False)
-        self.bake_layer_btn.setFixedHeight(45)
-        self.bake_layer_btn.setStyleSheet("""
-        QPushButton {background-color : #3C82E7 } 
-        QPushButton:disabled { background-color: #4D75B0; }
-        """)
+        self.bake_layer_btn.setFixedHeight(BUTTON_H)
+        self.bake_layer_btn.setStyleSheet(TEAL_STYLE)
         self.bake_layer_btn.clicked.connect(lambda: self.on_bake(layer=True))
-        main_layout.addWidget(self.bake_layer_btn)
+        bake_layout.addWidget(self.bake_layer_btn)
+
+        # ----------------
+        # Delete Section
+        # ----------------
+        danger_label = QtWidgets.QLabel("Delete")
+        danger_label.setStyleSheet("font-weight: bold; color: #E74C3C;")
+        main_layout.addWidget(danger_label)
 
         self.delete_btn = QtWidgets.QPushButton("Delete Warp")
         self.delete_btn.setEnabled(False)
-        self.delete_btn.setStyleSheet("""
-        QPushButton {background-color : #E74C3C } 
-        QPushButton:disabled { background-color: #B0574D; }
-        """)
-
+        self.delete_btn.setFixedHeight(BUTTON_H)
+        self.delete_btn.setStyleSheet(RED_STYLE)
         self.delete_btn.clicked.connect(self.on_delete)
         main_layout.addWidget(self.delete_btn)
 
