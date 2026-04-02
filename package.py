@@ -1,6 +1,6 @@
 name = 'timeWarp'
 
-version = '2.1.0.hh.2.1.1'
+version = '2.1.0.hh.2.1.2'
 
 authors = [
     'Adam Baker',
@@ -25,6 +25,7 @@ variants = [
 def commands():
     env.REZ_TIMEWARP_ROOT = '{root}'
     env.PYTHONPATH.append('{root}/src/python')
+    env.MAYA_PLUG_IN_PATH.append('{root}/src/python/timeWarp/plug_ins')
 
 
 build_command = 'rez python {root}/rez_build.py'
