@@ -1,3 +1,5 @@
 parser.add_argument(
-    "--symlink", help="Build REZ package locally with symlink targeting the source."
+    "--symlink",
+    action='store_true',
+    help="Build REZ package locally with symlink targeting the source."
 )
