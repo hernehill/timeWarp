@@ -282,7 +282,7 @@ class TimeWarp(QtWidgets.QDialog):
         """
 
         warp_name, create = QtWidgets.QInputDialog.getText(self, "Time Warp", "Warp Name:",
-                                                           QtWidgets.QLineEdit.Normal, "atk")
+                                                           QtWidgets.QLineEdit.Normal, "mrx")
 
         if warp_name and create:
             name = core.create_warp(warp_name=warp_name)
