@@ -405,9 +405,7 @@ def launch():
         _WIDGET.close()
         _WIDGET = None
 
-    check = plugin.check()
-    print(check)
-    if not check:
+    if not plugin.check():
         raise RuntimeError("Plugin unable to load make sure it is installed correctly")
 
     _WIDGET = TimeWarp()
