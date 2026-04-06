@@ -8,6 +8,7 @@ from timeWarp.qt_compat import *
 
 from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 from timeWarp.api import core
+from timeWarp.utils import plugin
 
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../', 'icons')
 
@@ -403,6 +404,9 @@ def launch():
     if _WIDGET:
         _WIDGET.close()
         _WIDGET = None
+
+    if not plugin.check():
+        raise RuntimeError("Plugin unable to load make sure it is installed correctly")
 
     _WIDGET = TimeWarp()
 

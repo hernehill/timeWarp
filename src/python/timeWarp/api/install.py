@@ -131,7 +131,7 @@ def transfer_scripts(scripts_path):
 
     copy_files(source, destination_path)
 
-    plugin_path = os.path.join(source, 'plug_ins')
+    plugin_path = os.path.join(source, 'plugins')
 
     return plugin_path
 
