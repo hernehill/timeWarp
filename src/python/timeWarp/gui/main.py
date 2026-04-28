@@ -345,7 +345,7 @@ class TimeWarp(QtWidgets.QDialog):
             None
         """
 
-        status = core.apply_warp(self.warp_select.currentText())
+        status = core.remove_warp(self.warp_select.currentText())
 
         if not status:
             QtWidgets.QMessageBox.warning(self, 'Time Warp',
