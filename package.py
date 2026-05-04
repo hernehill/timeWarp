@@ -1,6 +1,6 @@
 name = 'timeWarp'
 
-version = '2.1.0.hh.2.2.0'
+version = '2.2.1.hh.1.0.0'
 
 authors = [
     'Adam Baker',
