@@ -285,7 +285,7 @@ class TimeWarp(QtWidgets.QDialog):
                                                            QtWidgets.QLineEdit.Normal, "atk")
 
         if warp_name and create:
-            name = core.create_warp(warp_name=warp_name)
+            name, selected_nodes = core.create_warp(warp_name=warp_name)
 
             # Check current count of items and toggle.
             if self.warp_select.count() == 0:
@@ -293,6 +293,13 @@ class TimeWarp(QtWidgets.QDialog):
 
             self.warp_select.addItem(name)
             self.warp_select.setCurrentText(name)
+
+            if selected_nodes:
+                choice = QtWidgets.QMessageBox.question(self, 'Time Warp', 'Would you like to add selection to warp?',
+                                                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+
+                if choice == QtWidgets.QMessageBox.Yes:
+                    core.apply_warp(name)
 
     def set_active_status(self, status):
         """ Change active status of warp.

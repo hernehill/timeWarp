@@ -21,8 +21,10 @@ def create_warp(warp_name=None, anti_warp=False):
         anti_warp (bool | False): If warp node should be a anti warp.
 
     Returns:
-        maya node name of warp time curve.
+        maya node name of warp time curve. and list of currently selected nodes
     """
+
+    current_selection = maya.cmds.ls(selection=True)
 
     min_time = maya.cmds.playbackOptions(query=True, minTime=True)
     max_time = maya.cmds.playbackOptions(query=True, maxTime=True)
@@ -57,7 +59,9 @@ def create_warp(warp_name=None, anti_warp=False):
     # Connect real time to the alternate condition
     maya.cmds.connectAttr("time1.outTime", status_node + ".timeInput", force=True)
 
-    return status_node
+    maya.cmds.select(current_selection)
+
+    return status_node, current_selection
 
 
 def apply_warp(warp_node):

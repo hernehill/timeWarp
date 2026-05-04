@@ -7,7 +7,7 @@ def check():
     Returns:
         True if the plugin is loaded, False otherwise.
     """
-    plugin_name = "timeWarper"
+    plugin_name = "WarpStatus"
 
     try:
         if cmds.pluginInfo(plugin_name, query=True, loaded=True):
