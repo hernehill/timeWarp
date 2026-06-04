@@ -285,26 +285,67 @@ def bake_warp(warp, steps=1, outside_keys=True, layer=False, layer_name=""):
     Args:
         warp (str): Maya warp node.
         steps (int | 1): How often to bake.
-        outside_keys (bool | True): If we maintain outside Keys.
-        layer (bool | False): If animation is baked onto a override layer.
+        outside_keys (bool | True): If we maintain outside keys. No effect when layer=True.
+        layer (bool | False): If animation is baked onto an override layer.
         layer_name (str | ''): Name of curve.
 
     Returns:
-        True if baked out.
+        bool: True if warped nodes were found and baked, False otherwise.
     """
 
     warped_nodes = get_warped_nodes(warp)
 
     if warped_nodes:
 
-        frame_start = maya.cmds.playbackOptions(query=True, minTime=True, animationStartTime=False)
-        frame_end = maya.cmds.playbackOptions(query=True, maxTime=True, animationEndTime=False)
+        frame_start = maya.cmds.playbackOptions(query=True, minTime=True)
+        frame_end = maya.cmds.playbackOptions(query=True, maxTime=True)
 
-        maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
-                              simulation=True, preserveOutsideKeys=outside_keys, bakeOnOverrideLayer=layer)
+        if layer:
+            base_name = f"{layer_name}Result" if layer_name else "ResultLayer"
+            existing_layers = set(maya.cmds.ls(type="animLayer") or [])
+            result_name = base_name
+            counter = 1
+            while result_name in existing_layers:
+                result_name = f"{base_name}{counter}"
+                counter += 1
 
-        if layer and layer_name:
-            maya.cmds.rename(maya.cmds.ls(type="animLayer")[0], f"{layer_name}Result")
+            # Duplicate animCurve nodes before baking so we can restore BaseAnimation after.
+            # bakeOnOverrideLayer removes base keys, so the backup must be taken first.
+            backup_curves = {}
+            for node in warped_nodes:
+                for attr in (maya.cmds.listAttr(node, keyable=True, scalar=True) or []):
+                    curves = maya.cmds.listConnections(f"{node}.{attr}", source=True,
+                                                       type="animCurve") or []
+                    for curve in curves:
+                        dup = maya.cmds.duplicate(curve, name=f"{curve}_bkp")[0]
+                        backup_curves[dup] = (node, attr)
+
+            # Bake the warp result onto a new override layer.
+            maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
+                                  simulation=True, preserveOutsideKeys=outside_keys,
+                                  bakeOnOverrideLayer=True)
+
+            # Find and rename the newly created override layer.
+            layers_after = set(maya.cmds.ls(type="animLayer") or [])
+            new_layers = layers_after - existing_layers - {"BaseAnimation"}
+            if new_layers:
+                maya.cmds.rename(list(new_layers)[0], result_name)
+
+            # Restore original animation to BaseAnimation from the backed-up curves.
+            for backup_curve, (node, attr) in backup_curves.items():
+                times = maya.cmds.keyframe(backup_curve, query=True, timeChange=True) or []
+                values = maya.cmds.keyframe(backup_curve, query=True, valueChange=True) or []
+                for t, v in zip(times, values):
+                    maya.cmds.setKeyframe(node, attribute=attr, time=t, value=v,
+                                          animLayer="BaseAnimation")
+                maya.cmds.delete(backup_curve)
+
+        else:
+            maya.cmds.bakeResults(warped_nodes, sampleBy=steps, time=(frame_start, frame_end),
+                                  simulation=True, preserveOutsideKeys=outside_keys)
+
+        maya.cmds.select(warped_nodes)
+        maya.cmds.delete(warp)
 
         return True
 
