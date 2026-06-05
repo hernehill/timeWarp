@@ -9,6 +9,28 @@ import maya.mel
 
 from timeWarp._versions import __version__, __doc__, __author__, __email__, __copyright__
 
+_ANIM_LAYER_BLEND_TYPES = (
+    "pairBlend",
+    "animBlendNodeAdditiveDA",
+    "animBlendNodeAdditiveDL",
+    "animBlendNodeAdditiveScale",
+    "animBlendNodeAdditiveRotation",
+    "animBlendNodeAdditive",
+    "animBlendNodeAdditiveF",
+)
+
+_ANIM_CURVE_TYPES = (
+    "animCurveTU",
+    "animCurveTA",
+    "animCurveTL",
+    "animCurveTT",
+    "animCurveUL",
+    "animCurveUA",
+    "animCurveUU",
+    "animCurveUT",
+)
+
+
 # Maya's main progress bar
 MAIN_PROGRESS_BAR = maya.mel.eval('$tmp = $gMainProgressBar')
 
@@ -174,10 +196,17 @@ def get_inputs(node):
     geo_inputs = maya.cmds.listConnections(node, source=True, destination=False,
                                            skipConversionNodes=True, type="geometryFilter") or []
     # Get connected animation curves.
-    anim_curves = maya.cmds.listConnections(node, source=True, destination=False,
-                                            skipConversionNodes=True, type="animCurve") or []
+    anim_curves = []
+    for curve_type in _ANIM_CURVE_TYPES:
+        anim_curves += maya.cmds.listConnections(node, source=True, destination=False,
+                                                 skipConversionNodes=True, type=curve_type) or []
+    # Traverse anim layer blend nodes so their upstream animCurves are found.
+    blend_nodes = []
+    for blend_type in _ANIM_LAYER_BLEND_TYPES:
+        blend_nodes += maya.cmds.listConnections(node, source=True, destination=False,
+                                                 skipConversionNodes=True, type=blend_type) or []
     # Make sure we aren't having any duplicates.
-    inputs = list(set(geo_inputs + anim_curves))
+    inputs = list(set(geo_inputs + anim_curves + blend_nodes))
 
     if not inputs:
         return results
